@@ -15,17 +15,20 @@ public class Component {
 	
 	@Column
 	String name;
+
+	@Column
+	Boolean deleted;
 	
 	public Component() {
 		
 	}
-	
-	public Component(Long id, String name) {
-		super();
+
+	public Component(Long id, String name, Boolean deleted) {
 		this.id = id;
 		this.name = name;
+		this.deleted = deleted;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -40,5 +43,13 @@ public class Component {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 }

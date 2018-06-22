@@ -1,14 +1,10 @@
 package com.example.sbnz.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class MedicalRecord {
@@ -25,17 +21,24 @@ public class MedicalRecord {
 	
 	@ManyToOne
 	Medicine medicine;
+
+	@Column
+	Date date;
+
+	@Column
+	Boolean deleted;
 	
 	public MedicalRecord() {
 		
 	}
 
-	public MedicalRecord(Long id, Disease disease, Set<Symptom> symptoms, Medicine medicine) {
-		super();
+	public MedicalRecord(Long id, Disease disease, Set<Symptom> symptoms, Medicine medicine, Date date, Boolean deleted) {
 		this.id = id;
 		this.disease = disease;
 		this.symptoms = symptoms;
 		this.medicine = medicine;
+		this.date = date;
+		this.deleted = deleted;
 	}
 
 	public Long getId() {
@@ -69,7 +72,20 @@ public class MedicalRecord {
 	public void setMedicine(Medicine medicine) {
 		this.medicine = medicine;
 	}
-	
-	
 
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

@@ -29,17 +29,20 @@ public class Disease {
 	@Column
 	@Enumerated(EnumType.STRING)
 	DiseaseGroup diseaseGroup;
+
+	@Column
+	Boolean deleted;
 	
 	public Disease() {
 		
 	}
 
-	public Disease(Long id, String name, Set<Symptom> symptoms, DiseaseGroup diseaseGroup) {
-		super();
+	public Disease(Long id, String name, Set<Symptom> symptoms, DiseaseGroup diseaseGroup, Boolean deleted) {
 		this.id = id;
 		this.name = name;
 		this.symptoms = symptoms;
 		this.diseaseGroup = diseaseGroup;
+		this.deleted = deleted;
 	}
 
 	public Long getId() {
@@ -74,4 +77,11 @@ public class Disease {
 		this.diseaseGroup = diseaseGroup;
 	}
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

@@ -30,16 +30,19 @@ public class Medicine {
 	@ManyToMany(fetch = FetchType.EAGER)
 	Set<Component> components = new HashSet<>();
 
+	@Column
+	Boolean deleted;
+
 	public Medicine() {
 		
 	}
-	
-	public Medicine(Long id, String name, MedicineType type, Set<Component> components) {
-		super();
+
+	public Medicine(Long id, String name, MedicineType type, Set<Component> components, Boolean deleted) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.components = components;
+		this.deleted = deleted;
 	}
 
 	public Long getId() {
@@ -73,7 +76,12 @@ public class Medicine {
 	public void setComponents(Set<Component> components) {
 		this.components = components;
 	}
-	
-	
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

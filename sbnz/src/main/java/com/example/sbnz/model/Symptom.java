@@ -21,16 +21,19 @@ public class Symptom {
 	@Column
 	@Enumerated(EnumType.STRING)
 	SymptomType type;
+
+	@Column
+	Boolean deleted;
 	
 	public Symptom() {
 		
 	}
 
-	public Symptom(Long id, String name, SymptomType type) {
-		super();
+	public Symptom(Long id, String name, SymptomType type, Boolean deleted) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
+		this.deleted = deleted;
 	}
 
 	public Long getId() {
@@ -56,6 +59,12 @@ public class Symptom {
 	public void setType(SymptomType type) {
 		this.type = type;
 	}
-	
-	
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 }

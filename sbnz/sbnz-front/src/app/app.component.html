@@ -1,0 +1,36 @@
+
+
+<div class="container">
+    
+    <nav class="navbar navbar-expand-sm" style="background:rgb(205, 230, 240)" >
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "home">Home</a>
+            </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color: rgb(70, 45, 45)" (click) = "logout()" routerLink = "logout">Logout</a>
+          </li>
+          <li class="nav-item" *ngIf="getRole() == 'ROLE_ADMIN'">
+              <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "symptoms">Symptoms</a>
+            </li>
+            <li class="nav-item" *ngIf="getRole() == 'ROLE_ADMIN'">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "components">Components</a>
+              </li>
+            <li class="nav-item" *ngIf="getRole() == 'ROLE_ADMIN'">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "medicines">Medicine</a>
+            </li>
+            <li class="nav-item" *ngIf="getRole() == 'ROLE_ADMIN'">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "diseases">Diseases</a>
+            </li>
+            <li class="nav-item" *ngIf="getRole() == 'ROLE_ADMIN'">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "registerDoctor">Register Doctor</a>
+              </li>
+
+        </ul>
+      
+      </nav>
+
+</div>
+  
+<router-outlet></router-outlet>
