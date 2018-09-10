@@ -42,7 +42,7 @@ query "Spisak pacijenata sa oslabljenim imunitetom"
 	$p: Patient($records: records)
 	$m: Medicine( type == "ANTIBIOTIC")
 	$tc: TimeCheck()
-	($l: List(size >= 10) from accumulate(
+	$l: List(size >= 10) from accumulate(
 		$mr: MedicalRecord(
 			date >= $tc.last12Months()
 		) from $records,
@@ -54,9 +54,9 @@ query "Spisak pacijenata sa oslabljenim imunitetom"
 			$d: disease
 		) from $l,
 		collectSet($d)
-	))
-	or
-	(not MedicalRecord( medicine.type != "ANTIBIOTIC", 
+	)
+	
+	not MedicalRecord( medicine.type != "ANTIBIOTIC", 
 		date >= $tc.last12Months()
-		) from $records)
+		) from $records
 end
