@@ -1,0 +1,62 @@
+package drools.spring.rules
+
+import com.example.sbnz.model.*;
+import com.example.sbnz.utils.*;
+import java.util.*;
+
+agenda-group "reports-agenda"
+
+query "Spisak pacijenata sa mogucim hronicnim oboljenjima"
+	$p: Patient($records: records)
+	$d: Disease( name != "Prehlada", name != "Groznica")
+	$tc: TimeCheck()
+	Number(intValue > 5) from accumulate (
+		$mr: MedicalRecord(
+			disease == $d,
+			date >= $tc.last2Years()
+		) from $records,
+		count($mr)
+	)
+end
+
+query "Spisak mogucih zavisnika"
+	$p: Patient($records: records)
+	$m: Medicine($doctor: doctor, type == "ANALGETIC")
+	$tc: TimeCheck()
+	$l: List(size >= 6) from accumulate (
+		$mr: MedicalRecord(
+			medicine == $m,
+			date >= $tc.last6Months()
+		) from $records,
+		collectList($mr)
+	)
+	$doctors: Set(size >=3) from accumulate(
+		MedicalRecord(
+			$doctor: doctor
+		) from $mr,
+		collectSet($doctor)
+	)
+end
+
+query "Spisak pacijenata sa oslabljenim imunitetom"
+	$p: Patient($records: records)
+	$m: Medicine( type == "ANTIBIOTIC")
+	$tc: TimeCheck()
+	($l: List(size >= 10) from accumulate(
+		$mr: MedicalRecord(
+			date >= $tc.last12Months()
+		) from $records,
+		collectList($mr)
+	)
+	
+	$s: Set(size >= 2) from accumulate(
+		MedicalRecord(
+			$d: disease
+		) from $l,
+		collectSet($d)
+	))
+	or
+	(not MedicalRecord( medicine.type != "ANTIBIOTIC", 
+		date >= $tc.last12Months()
+		) from $records)
+end

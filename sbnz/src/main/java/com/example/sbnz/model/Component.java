@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Component {
@@ -51,5 +52,15 @@ public class Component {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Component component = (Component) o;
+		return Objects.equals(id, component.id) &&
+				Objects.equals(name, component.name) &&
+				Objects.equals(deleted, component.deleted);
 	}
 }

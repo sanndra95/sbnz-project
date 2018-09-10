@@ -14,4 +14,6 @@ public interface MedicineService {
     Collection<Medicine> getAll();
 
     Medicine findById(Long id);
+
+    Boolean checkAllergies(Long id, Medicine medicine);
 }

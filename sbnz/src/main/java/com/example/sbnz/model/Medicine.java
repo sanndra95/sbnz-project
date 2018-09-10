@@ -1,6 +1,7 @@
 package com.example.sbnz.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -83,5 +84,17 @@ public class Medicine {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Medicine medicine = (Medicine) o;
+		return Objects.equals(id, medicine.id) &&
+				Objects.equals(name, medicine.name) &&
+				type == medicine.type &&
+				Objects.equals(components, medicine.components) &&
+				Objects.equals(deleted, medicine.deleted);
 	}
 }

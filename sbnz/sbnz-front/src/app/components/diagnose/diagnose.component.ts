@@ -34,6 +34,9 @@ export class DiagnoseComponent implements OnInit {
   showMedicineForm: boolean = false;
   showChosenMedicine: boolean = false;
   diagnosisConfirmation: boolean = false;
+
+  patientIsAllergic: boolean;
+  showAllergyMessage: boolean = false;
   
 
   showDiseasesTable: boolean = false;
@@ -147,8 +150,19 @@ export class DiagnoseComponent implements OnInit {
   addMedicine() {
     this.record.medicine = this.currentMedicine;
     this.showChosenMedicine = true;
-    this.diagnosisConfirmation = true;
-    console.log(this.record);
+    
+    console.log(this.record.medicine);
+    this.medicineService.checkForAllergies(this.patient.id, this.record.medicine).subscribe(data => {
+        this.patientIsAllergic = data;
+        console.log(this.patientIsAllergic);
+    });
+
+    if(this.patientIsAllergic) {
+      this.showAllergyMessage = true;
+    }
+    else {
+      this.diagnosisConfirmation = true;
+    }
   }
 
   confirmDiagnosis() {

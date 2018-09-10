@@ -3,8 +3,10 @@ package com.example.sbnz.controller;
 import com.example.sbnz.model.Component;
 import com.example.sbnz.model.Disease;
 import com.example.sbnz.model.Medicine;
+import com.example.sbnz.model.Patient;
 import com.example.sbnz.service.DiseaseService;
 import com.example.sbnz.service.MedicineService;
+import com.example.sbnz.service.PatientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class MedicineController {
 
     @Autowired
     MedicineService medicineService;
+
+    @Autowired
+    PatientService patientService;
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -76,6 +81,14 @@ public class MedicineController {
         m.setComponents(medicine.getComponents());
         Medicine updated = medicineService.create(m);
         return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/checkAllergies/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> checkForAllergies(@PathVariable Long id, @RequestBody Medicine medicine) {
+
+        Boolean allergic = medicineService.checkAllergies(id, medicine);
+        return new ResponseEntity<>(allergic, HttpStatus.OK);
     }
 
 }

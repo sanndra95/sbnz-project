@@ -25,4 +25,12 @@ export class MedicineService {
   deleteMedicine(id : number) {
     return this.http.delete("http://localhost:8080/api/medicine/delete/" + id);
   }
+
+  checkForAllergies(id: number, medicine: Medicine): Observable<boolean> {
+    let headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
+    return this.http.post<boolean>("http://localhost:8080/api/medicine/checkAllergies/" + id, medicine,
+    {
+      headers: headers
+    });
+  }
 }

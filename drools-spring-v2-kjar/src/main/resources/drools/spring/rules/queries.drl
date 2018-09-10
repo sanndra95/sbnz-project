@@ -4,6 +4,8 @@ import com.example.sbnz.model.*;
 import com.example.sbnz.dto.*;
 import java.util.*;
 
+agenda-group "queries-agenda"
+
 query "Diseases by symptoms they contain" (List $symptoms)
 	$d: Disease($s: symptoms)
 	$num: Number(intValue >= 1) from accumulate (

@@ -1,0 +1,37 @@
+package drools.spring.rules
+
+import com.example.sbnz.model.*;
+import com.example.sbnz.utils.*;
+import java.util.*;
+
+agenda-group "alergies-agenda"
+
+rule "Patient is allergic to medicine"
+	no-loop
+	when
+		$p: Patient($medicineAllergies: medicineAllergies)
+		$m: Medicine($name: name)
+		Number(intValue >= 1) from accumulate(
+			$med: Medicine (
+				name == $name
+			) from $medicineAllergies,
+			count($med)
+		)
+	then
+		System.out.println("Allergic to medicine");
+end
+
+rule "Patient is allergic to a medicine component"
+	no-loop
+	when
+		$p: Patient($componentAllergies: componentAllergies)
+		$c: Component($name: name)
+		Number(intValue >= 1) from accumulate(
+			$comp: Component (
+				name == $name
+			) from $componentAllergies,
+			count($comp)
+		)
+	then
+		System.out.println("Allergic to medicine component");
+end

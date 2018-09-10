@@ -4,6 +4,8 @@ import com.example.sbnz.model.*;
 import com.example.sbnz.utils.*;
 import java.util.*;
 
+agenda-group "diseases-agenda"
+
 rule "Prehlada"
 	no-loop
 	lock-on-active true

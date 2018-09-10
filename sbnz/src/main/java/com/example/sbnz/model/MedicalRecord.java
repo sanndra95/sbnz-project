@@ -22,6 +22,9 @@ public class MedicalRecord {
 	@ManyToOne
 	Medicine medicine;
 
+	@ManyToOne
+	User doctor;
+
 	@Column
 	Date date;
 
@@ -32,11 +35,12 @@ public class MedicalRecord {
 		
 	}
 
-	public MedicalRecord(Long id, Disease disease, Set<Symptom> symptoms, Medicine medicine, Date date, Boolean deleted) {
+	public MedicalRecord(Long id, Disease disease, Set<Symptom> symptoms, Medicine medicine, User doctor, Date date, Boolean deleted) {
 		this.id = id;
 		this.disease = disease;
 		this.symptoms = symptoms;
 		this.medicine = medicine;
+		this.doctor = doctor;
 		this.date = date;
 		this.deleted = deleted;
 	}
@@ -87,5 +91,13 @@ public class MedicalRecord {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public User getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(User doctor) {
+		this.doctor = doctor;
 	}
 }

@@ -45,4 +45,22 @@ public class TimeCheck {
         Date retVal = cal.getTime();
         return retVal;
     }
+
+    public Date last2Years() {
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(today);
+        cal.add(Calendar.YEAR, -2);
+        Date retVal = cal.getTime();
+        return retVal;
+    }
+
+    public Date last12Months() {
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(today);
+        cal.add(Calendar.MONTH, -12);
+        Date retVal = cal.getTime();
+        return retVal;
+    }
 }

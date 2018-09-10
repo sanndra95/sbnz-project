@@ -147,6 +147,10 @@
             </div>
           </form>
 
+          <div *ngIf = "showAllergyMessage">
+            <h4>This patient is allergic to this medicine or its components. Please choose another one.</h4>
+          </div>
+
           <div *ngIf = "showChosenMedicine">
               <h4>Medicine you chose</h4>
               Name: {{record.medicine.name}}
