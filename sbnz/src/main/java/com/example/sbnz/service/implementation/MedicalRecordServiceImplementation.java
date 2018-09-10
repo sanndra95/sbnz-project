@@ -26,6 +26,6 @@ public class MedicalRecordServiceImplementation implements MedicalRecordService 
 
     @Override
     public MedicalRecord findById(Long id) {
-        return medicalRecordRepository.findOne(id);
+        return medicalRecordRepository.getOne(id);
     }
 }

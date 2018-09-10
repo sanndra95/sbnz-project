@@ -21,7 +21,7 @@ public class ComponentServiceImplementation implements ComponentService {
 
     @Override
     public Component delete(Long id) {
-        Component component = componentRepository.findOne(id);
+        Component component = componentRepository.getOne(id);
         componentRepository.deleteComponentById(id);
         return component;
     }
@@ -33,6 +33,6 @@ public class ComponentServiceImplementation implements ComponentService {
 
     @Override
     public Component findById(Long id) {
-        return componentRepository.findOne(id);
+        return componentRepository.getOne(id);
     }
 }

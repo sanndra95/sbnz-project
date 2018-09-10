@@ -73,4 +73,11 @@ public class SymptomController {
         Symptom updated = symptomService.create(s);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/getByDisease", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> getSymptomsByDisease(@RequestBody Disease disease) {
+        Collection<Symptom> symptoms = symptomService.getSymptomsByDisease(disease);
+        return new ResponseEntity<>(symptoms, HttpStatus.OK);
+    }
 }

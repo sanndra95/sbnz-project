@@ -1,5 +1,6 @@
 package com.example.sbnz.controller;
 
+import com.example.sbnz.dto.DiseaseDTO;
 import com.example.sbnz.model.*;
 import com.example.sbnz.service.DiseaseService;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/disease")
@@ -72,5 +74,14 @@ public class DiseaseController {
         d.setSymptoms(disease.getSymptoms());
         Disease updated = diseaseService.create(d);
         return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getBySymptoms", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> getDiseasesBySymptoms(@RequestBody List<Symptom> symptoms) {
+        logger.info("> symptoms size: {}", symptoms.size());
+
+        Collection<DiseaseDTO> dto = diseaseService.getDiseasesBySymptoms(symptoms);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

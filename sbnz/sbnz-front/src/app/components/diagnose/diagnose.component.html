@@ -1,0 +1,165 @@
+<div class="container">
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Chosen:</label>
+        <ul *ngFor = "let s of record.symptoms; let i = index">
+                <li>{{s.name}}</li>
+                <button type="submit" class="btn btn-danger" (click) = "removeSymptom(s)">Remove</button>
+        </ul>
+    </div>
+
+    <form #symptomForm = ngForm>
+        <div class="form-row align-items-center">
+          <div class="col-auto my-1">
+            <label class="mr-sm-2" for="inputSymptom">Choose symptoms: </label>
+            </div>
+            <div class="col-auto my-1">
+            <select class="custom-select mr-sm-2" id="inputSymptom" [(ngModel)] = "currentSymptom" name = "symptoms" required autofocus>
+              <option *ngFor = "let s of allSymptoms; let i = index" [ngValue]="s">{{s.name}}</option>
+            </select>
+          </div>
+          <div class="col-auto my-1">
+            <button type="submit" [disabled] = "!symptomForm.valid" class="btn btn-success" (click) = "addSymptom()">Add</button>
+          </div>
+        </div>
+    </form>
+
+    <table style="margin: 5px;">
+      <tbody>
+        <tr>
+          <td><button type="button" class="btn btn-primary" (click) = "startResoner = !startResoner; showForm1()" >Use resoner</button></td>
+          <td><button type="button" class="btn btn-success" (click) = "diseasesBySymptoms = !diseasesBySymptoms; showForm2()" [disabled] = "record.symptoms.length === 0">Diseases by symptoms</button></td>
+          <td><button type="button" class="btn btn-danger" (click) = "symptomsByDisease = !symptomsByDisease; showForm3()" >Symptoms by disease</button></td>
+          <td><button type="button" class="btn btn-warning" (click) = "selfDiagnose = !selfDiagnose; showForm4()" [disabled] = "record.symptoms.length === 0">Self-diagnose</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf = "startResoner">
+        <button type="button" class="btn btn-primary" (click) = "getDiagnose()">START</button>
+        <div *ngIf = "showResonerResult">
+            Detected disease: {{(record.disease !== null) ?  record.disease.name : "No disease detected."}}
+        </div>
+    </div>
+
+
+
+    <div *ngIf = "diseasesBySymptoms">
+      sve bolesti koje su povezane sa jednim ili vise unetih simptoma
+      <button type="button" class="btn btn-primary" (click) = "getDiseasesBySymptoms()">GET DISEASES</button>
+      <div *ngIf = "showDiseasesTable">
+          <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Disease</th>
+                  <th>Symptoms count</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor = "let d of diseasesBySymptomsList">
+                  <td>{{d.disease.name}}</td>
+                  <td>{{d.symptomsCount}}</td>
+                  <td><button type="button" class="btn btn-primary" (click) = "chooseDisease(d.disease)">Choose</button></td>
+                </tr>
+              
+              </tbody>
+            </table>
+      </div>
+      <div *ngIf = "diseaseChosen">
+        You chose disease: {{record.disease.name}}
+      </div>
+
+
+    </div>
+
+    <div *ngIf = "symptomsByDisease">
+      <form #diseaseForm = ngForm>
+          <div class="form-row align-items-center">
+            <div class="col-auto my-1">
+              <label class="mr-sm-2" for="inputSymptom">Choose disease: </label>
+              </div>
+              <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="inputDisease" [(ngModel)] = "chosenDisease" name = "disease" required autofocus>
+                <option *ngFor = "let d of allDiseases; let i = index" [ngValue]="d">{{d.name}}</option>
+              </select>
+            </div>
+            <div class="col-auto my-1">
+              <button type="submit" [disabled] = "!diseaseForm.valid" class="btn btn-success" (click) = "getSymptomsByDisease()">Get symptoms</button>
+            </div>
+          </div>
+      </form>
+
+      <div *ngIf = "showSymptomsTable">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Symptom</th>
+                <th>Type</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor = "let s of symptomsOfADisease">
+                <td>{{s.name}}</td>
+                <td>{{s.type}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button type="button" class="btn btn-primary" (click) = "chooseDisease(chosenDisease)">Choose this disease</button>
+      </div>
+    </div>
+
+    <div *ngIf = "selfDiagnose">
+      <form #diseaseForm2 = ngForm>
+          <div class="form-row align-items-center">
+            <div class="col-auto my-1">
+              <label class="mr-sm-2" for="inputSymptom">Self-diagnose the disease: </label>
+              </div>
+              <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="inputDisease" [(ngModel)] = "selfDiagnosedDisease" name = "disease" required autofocus>
+                <option *ngFor = "let d of allDiseases; let i = index" [ngValue]="d">{{d.name}}</option>
+              </select>
+            </div>
+            <div class="col-auto my-1">
+              <button type="submit" [disabled] = "!diseaseForm2.valid" class="btn btn-success" (click) = "chooseDisease(selfDiagnosedDisease)">Diagnose</button>
+            </div>
+          </div>
+      </form>
+    </div>
+
+
+    <div *ngIf = "showMedicineForm && record.disease !== null">
+        <form #medicineForm = ngForm>
+            <div class="form-row align-items-center">
+              <div class="col-auto my-1">
+                <label class="mr-sm-2" for="inputMedicine">Choose medicine: </label>
+                </div>
+                <div class="col-auto my-1">
+                <select class="custom-select mr-sm-2" id="inputMedicine" [(ngModel)] = "currentMedicine" name = "medicine" autofocus>
+                  <option *ngFor = "let m of allMedicine; let i = index" [ngValue]="m">{{m.name}} -- {{m.type}}</option>
+                </select>
+              </div>
+              <div class="col-auto my-1">
+                <button type="submit" class="btn btn-success" (click) = "addMedicine()">Add</button>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf = "showChosenMedicine">
+              <h4>Medicine you chose</h4>
+              Name: {{record.medicine.name}}
+              <br/>
+              Type: {{record.medicine.type}}
+          </div>
+    </div>
+    <div class="col-auto my-1" *ngIf="diagnosisConfirmation">
+        <button type="submit" class="btn btn-success" (click) = "confirmDiagnosis()">Confirm diagnosis</button>
+      </div>
+    <div>
+
+      </div>
+
+    
+</div>

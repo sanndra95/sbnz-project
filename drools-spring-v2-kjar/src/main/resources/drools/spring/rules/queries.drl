@@ -1,0 +1,22 @@
+package drools.spring.rules
+
+import com.example.sbnz.model.*;
+import com.example.sbnz.dto.*;
+import java.util.*;
+
+query "Diseases by symptoms they contain" (List $symptoms)
+	$d: Disease($s: symptoms)
+	$num: Number(intValue >= 1) from accumulate (
+		$ss: Symptom(
+			$symptoms contains this
+		) from $s,
+		count($ss)
+	)
+end
+
+query "Symptoms of a disease" (Disease $d)
+	$disease: Disease($d == this, $symptoms: symptoms)
+end
+
+
+	

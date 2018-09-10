@@ -12,8 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Patient {
 	
 	@Id
@@ -35,21 +38,17 @@ public class Patient {
 	@ManyToMany(fetch = FetchType.EAGER)
 	Set<Component> componentAllergies = new HashSet<>();
 
-	@Column
-	Boolean deleted;
-
 	public Patient() {
 		
 	}
 
-	public Patient(Long id, String firstName, String lastName, Set<MedicalRecord> records, Set<Medicine> medicineAllergies, Set<Component> componentAllergies, Boolean deleted) {
+	public Patient(Long id, String firstName, String lastName, Set<MedicalRecord> records, Set<Medicine> medicineAllergies, Set<Component> componentAllergies) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.records = records;
 		this.medicineAllergies = medicineAllergies;
 		this.componentAllergies = componentAllergies;
-		this.deleted = deleted;
 	}
 
 	public Long getId() {
@@ -102,11 +101,4 @@ public class Patient {
 		this.componentAllergies = componentAllergies;
 	}
 
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
-	}
 }

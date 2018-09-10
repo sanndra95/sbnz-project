@@ -22,7 +22,7 @@ public class MedicineServiceImplementation implements MedicineService {
 
     @Override
     public Medicine delete(Long id) {
-        Medicine medicine = medicineRepository.findOne(id);
+        Medicine medicine = medicineRepository.getOne(id);
         medicineRepository.deleteMedicineById(id);
         return medicine;
     }
@@ -34,6 +34,6 @@ public class MedicineServiceImplementation implements MedicineService {
 
     @Override
     public Medicine findById(Long id) {
-        return medicineRepository.findOne(id);
+        return medicineRepository.getOne(id);
     }
 }

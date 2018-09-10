@@ -1,0 +1,38 @@
+<div class="container">
+  
+      <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Medicine allergies</th>
+              <th>Component allergies</th>
+              <th>Records</th>
+              <th>Diagnose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor = "let patient of patients; let i = index">
+              <td>{{i + 1}}.</td>
+              <td>{{patient.firstName}}</td>
+              <td>{{patient.lastName}}</td>
+              <td>
+                <ul *ngFor = "let m of patient.medicineAllergies">
+                  <li>{{m.name}}</li>
+                </ul>
+              </td>
+              <td>
+                  <ul *ngFor = "let c of patient.componentAllergies">
+                    <li>{{c.name}}</li>
+                  </ul>
+                </td>
+              <td><button type="button" class="btn btn-info" (click) = "seeRecords(patient.id)">Records</button></td>
+              <td><button type="button" class="btn btn-success" (click) = "diagnose(patient.id, i)">Diagnose</button></td>
+  
+            </tr>
+          
+          </tbody>
+        </table>
+
+</div>

@@ -29,6 +29,10 @@ public class Symptom {
 		
 	}
 
+	public Symptom(String name) {
+		this.name = name;
+	}
+
 	public Symptom(Long id, String name, SymptomType type, Boolean deleted) {
 		this.id = id;
 		this.name = name;
@@ -66,5 +70,19 @@ public class Symptom {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+
+		if (!(o instanceof Symptom)) {
+			return false;
+		}
+
+		Symptom c = (Symptom) o;
+		return c.getName().equals(this.name);
 	}
 }

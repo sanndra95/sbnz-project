@@ -22,6 +22,12 @@ import { MedicinesComponent } from './components/medicines/medicines.component';
 import { MedicineService } from './services/medicine/medicine.service';
 import { DiseasesComponent } from './components/diseases/diseases.component';
 import { DiseaseService } from './services/disease/disease.service';
+import { AddPatientComponent } from './components/add-patient/add-patient.component';
+import { PatientService } from './services/patient/patient.service';
+import { PatientsComponent } from './components/patients/patients.component';
+import { DiagnoseComponent } from './components/diagnose/diagnose.component';
+import { RecordsComponent } from './components/records/records.component';
+import { OrderModule } from 'ngx-order-pipe';
 
 @NgModule({
   declarations: [
@@ -33,13 +39,18 @@ import { DiseaseService } from './services/disease/disease.service';
     RegisterDoctorComponent,
     HomeComponent,
     MedicinesComponent,
-    DiseasesComponent
+    DiseasesComponent,
+    AddPatientComponent,
+    PatientsComponent,
+    DiagnoseComponent,
+    RecordsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    OrderModule,
     RouterModule.forRoot(
       [
         { path: '', component: LoginComponent},
@@ -50,6 +61,10 @@ import { DiseaseService } from './services/disease/disease.service';
         { path: 'medicines', component: MedicinesComponent },
         { path: 'diseases', component: DiseasesComponent },
         { path: 'registerDoctor', component: RegisterDoctorComponent },
+        { path: 'addPatient', component: AddPatientComponent },
+        { path: 'patients', component: PatientsComponent },
+        { path: 'diagnose/:id', component: DiagnoseComponent },
+        { path: 'records/:id', component: RecordsComponent },
         { path: 'not-found', component: PageNotFoundComponent},
         { path: '**', redirectTo:'not-found'}
       ]
@@ -61,6 +76,7 @@ import { DiseaseService } from './services/disease/disease.service';
     ComponentService,
     MedicineService,
     DiseaseService,
+    PatientService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptorService,

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Disease } from '../../model/disease';
+import { Symptom } from '../../model/symptom';
+import { DiseaseDTO } from '../../model/diseaseDTO';
 
 @Injectable()
 export class DiseaseService {
@@ -22,5 +24,14 @@ export class DiseaseService {
 
   deleteDisease(id : number) {
     return this.http.delete("http://localhost:8080/api/disease/delete/" + id);
+  }
+
+  getDiseasesBySymptoms(symptoms: Symptom[]): Observable<DiseaseDTO[]> {
+    let headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
+    return this.http.post<DiseaseDTO[]>("http://localhost:8080/api/disease/getBySymptoms", symptoms,
+    {
+      headers: headers
+    });
+
   }
 }

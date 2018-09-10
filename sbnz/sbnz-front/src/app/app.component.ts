@@ -24,7 +24,7 @@ export class AppComponent {
   }
 
   getRole(){
-    return LoggedUtils.getRole();
+      return LoggedUtils.getRole();
   }
 
 }
