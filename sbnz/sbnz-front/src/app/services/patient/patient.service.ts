@@ -5,6 +5,7 @@ import { MedicalRecord } from '../../model/medicalRecord';
 import { Observer } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { Medicine } from '../../model/medicine';
+import { ReportDTO } from '../../model/reportDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,18 @@ export class PatientService {
 
   getRecords(id: number) {
     return this.http.get<MedicalRecord[]>("http://localhost:8080/api/medicalRecord/getAll/" + id);
+  }
+
+  getReport1() {
+    return this.http.get<ReportDTO[]>("http://localhost:8080/api/patient/getReport1");
+  }
+
+  getReport2() {
+    return this.http.get<ReportDTO[]>("http://localhost:8080/api/patient/getReport2");
+  }
+
+  getReport3() {
+    return this.http.get<Patient[]>("http://localhost:8080/api/patient/getReport3");
   }
 
   

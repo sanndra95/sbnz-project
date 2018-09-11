@@ -51,6 +51,8 @@ public class SymptomServiceImplementation implements SymptomService {
         KieSession kieSession = kieContainer.newKieSession("ksession-rules");
         kieSession.insert(disease);
 
+        kieSession.getAgenda().getAgendaGroup("queries-agenda").setFocus();
+
         QueryResults results = kieSession.getQueryResults("Symptoms of a disease", disease);
 
         Collection<Symptom> symptoms = new HashSet<>();

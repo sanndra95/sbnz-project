@@ -1,5 +1,6 @@
 package com.example.sbnz.controller;
 
+import com.example.sbnz.dto.ReportDTO;
 import com.example.sbnz.model.Patient;
 import com.example.sbnz.service.PatientService;
 import org.slf4j.Logger;
@@ -62,5 +63,26 @@ public class PatientController {
         p.setComponentAllergies(patient.getComponentAllergies());
         Patient updated = patientService.create(p);
         return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getReport1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> getReport1() {
+        Collection<ReportDTO> patients = patientService.getReport1();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getReport2", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> getReport2() {
+        Collection<ReportDTO> patients = patientService.getReport2();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getReport3", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> getReport3() {
+        Collection<Patient> patients = patientService.getReport3();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 }

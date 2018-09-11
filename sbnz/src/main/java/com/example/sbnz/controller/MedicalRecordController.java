@@ -57,52 +57,14 @@ public class MedicalRecordController {
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> startResoner(@PathVariable Long id, @RequestBody MedicalRecord medicalRecord) {
         //logger.info("> medical record: disease: {} medicine: {}  symptoms: {}", medicalRecord.getDisease().getName(), medicalRecord.getMedicine().getName(), medicalRecord.getSymptoms().size());
-
         medicalRecord.setDate(new Date());
         medicalRecord.setDeleted(false);
 
         Patient patient = patientService.findById(id);
 
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        MedicalRecord mr = medicalRecordService.search(patient, medicalRecord);
 
-        Collection<Disease> diseases = diseaseService.getAll();
-
-        logger.info("size: {}", diseases.size());
-        logger.info("patient: {}", patient.getFirstName());
-        logger.info("record: {}", medicalRecord.getDate());
-
-        kieSession.insert(patient);
-        kieSession.insert(medicalRecord);
-
-        for(Disease d : diseases) {
-            kieSession.insert(d);
-        }
-
-        kieSession.insert(new DiseasePriority());
-        kieSession.insert(new TimeCheck());
-
-        //kieSession.getAgenda().getAgendaGroup("diseases-agenda").setFocus();
-
-        kieSession.fireAllRules();
-        //kieSession.dispose();
-
-        //MedicalRecord mr = medicalRecordService.create(medicalRecord);
-        logger.info("symptoms: {}", medicalRecord.getSymptoms().size());
-
-        if(medicalRecord.getDisease() != null) {
-            logger.info("disease detected: {}", medicalRecord.getDisease().getName());
-        }
-        else {
-            logger.info("no disease detected");
-        }
-
-        //patient.getRecords().add(medicalRecord);
-
-        //Patient p = patientService.create(patient);
-
-        //logger.info("> update patient: {} {}", p.getFirstName(), p.getLastName());
-
-        return new ResponseEntity<>(medicalRecord, HttpStatus.OK);
+        return new ResponseEntity<>(mr, HttpStatus.OK);
     }
 
     @PostMapping(value = "/create/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

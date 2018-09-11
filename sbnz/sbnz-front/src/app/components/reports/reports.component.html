@@ -1,0 +1,89 @@
+<div class="container">
+
+  <table style="margin: 5px;">
+    <tbody>
+      <tr>
+        <td><button type="button" class="btn btn-info" (click) = "showReport1 = !showReport1; report1()" >Patients with chronic diseases</button></td>
+        <td><button type="button" class="btn btn-info" (click) = "showReport2 = !showReport2; report2()">Possible addicts</button></td>
+        <td><button type="button" class="btn btn-info" (click) = "showReport3 = !showReport3; report3()" >Patients with weakened immunity</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div *ngIf = "showReport1">
+    <h5>Patients diagnosed with the same disease (excluding cold and fever) more than 5 times in the past 2 years.</h5>
+  
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Disease</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor = "let r of foundReports1; let i = index">
+            <td>{{i + 1}}.</td>
+            <td>{{r.firstName}}</td>
+            <td>{{r.lastName}}</td>
+            <td>{{r.disease}}</td>
+          </tr>
+        
+        </tbody>
+      </table>
+  
+  </div>
+
+  <div *ngIf = "showReport2">
+    <h5>Patients have been prescribed analgetics at least 6 times in the past 6 months by 3 or more different doctors.</h5>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Medicine</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor = "let r of foundReports2; let i = index">
+          <td>{{i + 1}}.</td>
+          <td>{{r.firstName}}</td>
+          <td>{{r.lastName}}</td>
+          <td>{{r.disease}}</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf = "showReport3">
+    <h5>Patients diagnosed more than 10 times in the past 12 months with at least 2 different diseases and had antibiotics prescribed for it.</h5>
+    <h5>Patients diagnosed only with diseases antibiotics are prescribed for in the past 12 months.</h5>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>First name</th>
+          <th>Last name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor = "let r of foundReports3; let i = index">
+          <td>{{i + 1}}.</td>
+          <td>{{r.firstName}}</td>
+          <td>{{r.lastName}}</td>
+        </tr>
+      
+      </tbody>
+    </table>
+  </div>
+  
+
+  
+
+</div>

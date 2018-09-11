@@ -4,7 +4,7 @@ import com.example.sbnz.model.*;
 import com.example.sbnz.utils.*;
 import java.util.*;
 
-agenda-group "alergies-agenda"
+agenda-group "allergies-agenda"
 
 rule "Patient is allergic to medicine"
 	no-loop

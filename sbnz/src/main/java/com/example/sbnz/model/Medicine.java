@@ -38,6 +38,10 @@ public class Medicine {
 		
 	}
 
+	public Medicine(String name) {
+		this.name = name;
+	}
+
 	public Medicine(Long id, String name, MedicineType type, Set<Component> components, Boolean deleted) {
 		this.id = id;
 		this.name = name;
@@ -88,13 +92,11 @@ public class Medicine {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Medicine medicine = (Medicine) o;
-		return Objects.equals(id, medicine.id) &&
-				Objects.equals(name, medicine.name) &&
-				type == medicine.type &&
-				Objects.equals(components, medicine.components) &&
-				Objects.equals(deleted, medicine.deleted);
+		return medicine.getName().equals(this.name);
 	}
 }

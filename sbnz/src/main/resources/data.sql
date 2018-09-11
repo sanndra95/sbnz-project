@@ -34,6 +34,7 @@ insert into symptom(id, name, type, deleted) value (20, "Gusenje", "GENERAL", fa
 insert into symptom(id, name, type, deleted) value (21, "Bol u grudima", "GENERAL", false)
 insert into symptom(id, name, type, deleted) value (22, "Dijareja", "GENERAL", false)
 insert into symptom(id, name, type, deleted) value (23, "Visok pritisak", "GENERAL", false)
+insert into symptom(id, name, type, deleted) value (24, "Oporavlja se od operacije", "SPECIFIC", false)
 
 --Prehlada--
 insert into disease_symptoms(disease_id, symptoms_id) value (1, 1)
@@ -122,6 +123,3 @@ insert into medicine_components(medicine_id, components_id) value (5, 8)
 insert into medicine_components(medicine_id, components_id) value (6, 1)
 insert into medicine_components(medicine_id, components_id) value (6, 7)
 insert into medicine_components(medicine_id, components_id) value (1, 8)
-
-insert into patient(id, first_name, last_name) value (1, "pacijent", "prvi")
-insert into patient(id, first_name, last_name) value (2, "pacijent", "drugi")

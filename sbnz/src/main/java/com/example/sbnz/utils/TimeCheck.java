@@ -22,9 +22,6 @@ public class TimeCheck {
         cal.setTime(today);
         cal.add(Calendar.MONTH, -6);
         Date retVal = cal.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        String s = sdf.format(retVal);
-        System.err.println(s);
         return retVal;
     }
 

@@ -27,10 +27,10 @@
     <table style="margin: 5px;">
       <tbody>
         <tr>
-          <td><button type="button" class="btn btn-primary" (click) = "startResoner = !startResoner; showForm1()" >Use resoner</button></td>
-          <td><button type="button" class="btn btn-success" (click) = "diseasesBySymptoms = !diseasesBySymptoms; showForm2()" [disabled] = "record.symptoms.length === 0">Diseases by symptoms</button></td>
-          <td><button type="button" class="btn btn-danger" (click) = "symptomsByDisease = !symptomsByDisease; showForm3()" >Symptoms by disease</button></td>
-          <td><button type="button" class="btn btn-warning" (click) = "selfDiagnose = !selfDiagnose; showForm4()" [disabled] = "record.symptoms.length === 0">Self-diagnose</button></td>
+          <td><button type="button" class="btn btn-info" (click) = "startResoner = !startResoner; showForm1()" >Use resoner</button></td>
+          <td><button type="button" class="btn btn-info" (click) = "diseasesBySymptoms = !diseasesBySymptoms; showForm2()" [disabled] = "record.symptoms.length === 0">Diseases by symptoms</button></td>
+          <td><button type="button" class="btn btn-info" (click) = "symptomsByDisease = !symptomsByDisease; showForm3()" >Symptoms by disease</button></td>
+          <td><button type="button" class="btn btn-info" (click) = "selfDiagnose = !selfDiagnose; showForm4()" [disabled] = "record.symptoms.length === 0">Self-diagnose</button></td>
         </tr>
       </tbody>
     </table>

@@ -70,10 +70,16 @@ public class MedicineServiceImplementation implements MedicineService {
             kieSession.insert(c);
         }
 
-        //kieSession.getAgenda().getAgendaGroup("allergies-agenda").setFocus();
+        kieSession.getAgenda().getAgendaGroup("allergies-agenda").setFocus();
 
         int num = kieSession.fireAllRules();
         logger.info("rules fired: {}", num);
+
+        kieSession.getObjects();
+
+        for (Object object : kieSession.getObjects()) {
+            kieSession.delete(kieSession.getFactHandle(object));
+        }
 
         if(num > 0) {
             return true;

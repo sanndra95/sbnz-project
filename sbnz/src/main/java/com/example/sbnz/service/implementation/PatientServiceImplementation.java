@@ -1,18 +1,37 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.dto.ReportDTO;
+import com.example.sbnz.model.Disease;
+import com.example.sbnz.model.Medicine;
 import com.example.sbnz.model.Patient;
+import com.example.sbnz.repository.DiseaseRepository;
+import com.example.sbnz.repository.MedicineRepository;
 import com.example.sbnz.repository.PatientRepository;
 import com.example.sbnz.service.PatientService;
+import com.example.sbnz.utils.TimeCheck;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.*;
 
 @Service
 public class PatientServiceImplementation implements PatientService {
 
     @Autowired
     PatientRepository patientRepository;
+
+    @Autowired
+    DiseaseRepository diseaseRepository;
+
+    @Autowired
+    MedicineRepository medicineRepository;
+
+    @Autowired
+    KieContainer kieContainer;
 
     @Override
     public Patient create(Patient patient) {
@@ -27,5 +46,149 @@ public class PatientServiceImplementation implements PatientService {
     @Override
     public Collection<Patient> getAll() {
         return patientRepository.findAll();
+    }
+
+    @Override
+    public Collection<ReportDTO> getReport1() {
+        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+
+        Collection<Patient> allPatients = patientRepository.findAll();
+        Collection<Disease> allDiseases = diseaseRepository.findAll();
+        Collection<Medicine> allMedicine = medicineRepository.findAll();
+
+        for(Patient p: allPatients) {
+            kieSession.insert(p);
+        }
+
+        for(Disease d: allDiseases) {
+            kieSession.insert(d);
+        }
+
+        for(Medicine m: allMedicine) {
+            kieSession.insert(m);
+        }
+
+        kieSession.insert(new TimeCheck());
+
+        kieSession.getAgenda().getAgendaGroup("reports-agenda").setFocus();
+
+        QueryResults results = kieSession.getQueryResults("Spisak pacijenata sa mogucim hronicnim oboljenjima");
+
+        List<ReportDTO> found = new ArrayList<>();
+
+        for(QueryResultsRow r: results) {
+            Patient p = (Patient) r.get("$p");
+            Disease d = (Disease) r.get("$d");
+            System.err.println(d.getName());
+            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), d.getName());
+            found.add(dto);
+        }
+
+        kieSession.getObjects();
+
+        for (Object object : kieSession.getObjects()) {
+            kieSession.delete(kieSession.getFactHandle(object));
+        }
+
+        return found;
+    }
+
+    @Override
+    public Collection<ReportDTO> getReport2() {
+        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+
+        Collection<Patient> allPatients = patientRepository.findAll();
+        Collection<Disease> allDiseases = diseaseRepository.findAll();
+        Collection<Medicine> allMedicine = medicineRepository.findAll();
+
+        System.err.println(allPatients.size());
+        System.err.println(allDiseases.size());
+        System.err.println(allMedicine.size());
+
+        for(Patient p: allPatients) {
+            kieSession.insert(p);
+        }
+
+        for(Disease d: allDiseases) {
+            kieSession.insert(d);
+        }
+
+        for(Medicine m: allMedicine) {
+            kieSession.insert(m);
+        }
+
+        kieSession.insert(new TimeCheck());
+
+        kieSession.getAgenda().getAgendaGroup("reports-agenda").setFocus();
+
+        QueryResults results = kieSession.getQueryResults("Spisak mogucih zavisnika");
+
+        System.err.println(results.size());
+
+        List<ReportDTO> found = new ArrayList<>();
+
+        for(QueryResultsRow r: results) {
+            Patient p = (Patient) r.get("$p");
+            Medicine m = (Medicine) r.get("$m");
+            System.err.println(m.getName());
+            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), m.getName());
+            found.add(dto);
+        }
+
+        kieSession.getObjects();
+
+        for (Object object : kieSession.getObjects()) {
+            kieSession.delete(kieSession.getFactHandle(object));
+        }
+
+        return found;
+    }
+
+    @Override
+    public Collection<Patient> getReport3() {
+        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+
+        Collection<Patient> allPatients = patientRepository.findAll();
+        Collection<Disease> allDiseases = diseaseRepository.findAll();
+        Collection<Medicine> allMedicine = medicineRepository.findAll();
+
+        for(Patient p: allPatients) {
+            kieSession.insert(p);
+        }
+
+        for(Disease d: allDiseases) {
+            kieSession.insert(d);
+        }
+
+        for(Medicine m: allMedicine) {
+            kieSession.insert(m);
+        }
+
+        kieSession.insert(new TimeCheck());
+
+        kieSession.getAgenda().getAgendaGroup("reports-agenda").setFocus();
+
+        QueryResults results = kieSession.getQueryResults("Spisak pacijenata sa oslabljenim imunitetom");
+
+        List<Patient> found = new ArrayList<>();
+
+        for(QueryResultsRow r: results) {
+            Patient p = (Patient) r.get("$p");
+            found.add(p);
+        }
+
+        Set<Patient> s = new HashSet<>();
+        s.addAll(found);
+        found.clear();
+        found.addAll(s);
+
+
+        kieSession.getObjects();
+
+        for (Object object : kieSession.getObjects()) {
+            kieSession.delete(kieSession.getFactHandle(object));
+        }
+
+        return found;
     }
 }

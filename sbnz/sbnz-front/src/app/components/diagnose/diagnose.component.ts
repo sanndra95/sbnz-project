@@ -155,14 +155,18 @@ export class DiagnoseComponent implements OnInit {
     this.medicineService.checkForAllergies(this.patient.id, this.record.medicine).subscribe(data => {
         this.patientIsAllergic = data;
         console.log(this.patientIsAllergic);
+
+        if(this.patientIsAllergic) {
+          this.showAllergyMessage = true;
+          this.diagnosisConfirmation = false;
+        }
+        else {
+          this.diagnosisConfirmation = true;
+          this.showAllergyMessage = false;
+        }
     });
 
-    if(this.patientIsAllergic) {
-      this.showAllergyMessage = true;
-    }
-    else {
-      this.diagnosisConfirmation = true;
-    }
+    
   }
 
   confirmDiagnosis() {

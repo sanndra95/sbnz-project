@@ -63,6 +63,8 @@ public class DiseaseServiceImplementation implements DiseaseService {
             kieSession.insert(d);
         }
 
+        kieSession.getAgenda().getAgendaGroup("queries-agenda").setFocus();
+
         QueryResults results = kieSession.getQueryResults("Diseases by symptoms they contain", symptoms);
 
         List<DiseaseDTO> found = new ArrayList<>();
@@ -74,22 +76,15 @@ public class DiseaseServiceImplementation implements DiseaseService {
             found.add(dto);
         }
 
-
-        /*for (int i = 0; i < found.size() - 1; i++) {
-            for(int j = 1; j < found.size(); j++) {
-                DiseaseDTO d1 = found.get(i);
-                DiseaseDTO d2 = found.get(j);
-                if(d1.getSymptomsCount() < d2.getSymptomsCount()) {
-                    found.set(j, d1);
-                    found.set(i, d2);
-                }
-
-            }
-        }*/
-
         Collections.sort(found, new DiseaseComparator());
 
         logger.info("dto: {}", found.size());
+
+        kieSession.getObjects();
+
+        for (Object object : kieSession.getObjects()) {
+            kieSession.delete(kieSession.getFactHandle(object));
+        }
 
         return found;
 

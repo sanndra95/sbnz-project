@@ -8,11 +8,10 @@ agenda-group "diseases-agenda"
 
 rule "Prehlada"
 	no-loop
-	lock-on-active true
 	salience($dp.priority)
 	when
 		$d: Disease(name == "Prehlada")
-		$mr: MedicalRecord(disease == null, $symptoms: symptoms)
+		$mr: MedicalRecord($symptoms: symptoms)
 		$dp: DiseasePriority($p: priority >= 4) from accumulate(
 			$s: Symptom (
 				name == "Curenje iz nosa" ||
@@ -32,7 +31,6 @@ end
 
 rule "Groznica"
 	no-loop
-	lock-on-active true
 	salience($dp.priority)
 	when
 		$d: Disease(name == "Groznica")
@@ -58,7 +56,6 @@ end
 
 rule "Upala krajnika"
 	no-loop
-	lock-on-active true
 	salience($dp.priority)
 	when
 		$d: Disease(name == "Upala krajnika")
@@ -85,7 +82,6 @@ end
 
 rule "Sinusna infekcija"
 	no-loop
-	lock-on-active true
 	salience($dp.priority)
 	when
 		$d: Disease(name == "Sinusna infekcija")
@@ -175,7 +171,7 @@ end
 
 rule "Dijabetes"
 	no-loop
-	salience 20
+	salience 21
 	when 
 		$d: Disease(name == "Dijabetes")
 		$mr: MedicalRecord(disease == null, $symptoms: symptoms)
@@ -232,12 +228,12 @@ rule "Hronicna bubrezna bolest"
 		System.out.println("Detektovana bolest: Hronicna bubrezna bolest");
 end
 
-rule "Akutna bubrezna povreda"
+rule "Akutna bubrezna povreda - sa povisenom temperaturom"
 	no-loop
 	salience 25
 	when
 		$d: Disease(name == "Akutna bubrezna povreda")
-		$mr: MedicalRecord(disease == null, $symptoms: symptoms)
+		$mr: MedicalRecord($symptoms: symptoms)
 		$p: Patient($records: records)
 		$tc: TimeCheck()
 		
@@ -253,30 +249,113 @@ rule "Akutna bubrezna povreda"
 			result(count)
 		)
 		
-		(Number(intValue >= 1) from accumulate(
-			$r: MedicalRecord(
-				(disease.getSymptoms() contains new Symptom("Temperatura veca od 38C") ||
-				disease.getSymptoms() contains new Symptom("Temperatura od 40C do 41C")) &&
-				date >= $tc.last14Days()
-			) from $records,
+		$symptomsList: List() from accumulate(
+			MedicalRecord(date >= $tc.last14Days(), disease != null,
+				$ss: disease.getSymptoms()
+				) from $records,
+				init(List l = new ArrayList<>();),
+				action(l.addAll($ss);),
+				result(l)
+		)
+		
+		Number(intValue >= 1) from accumulate(
+			Symptom(
+				name == "Temperatura veca od 38C" || 
+				name == "Temperatura od 40C do 41C"
+			) from $symptomsList,
 			init(int count = 0;),
 			action(count++;),
 			result(count)
-		))
-		or
-		(Number(intValue >= 1) from accumulate(
-			$r: MedicalRecord(
-				medicine != null &&
-				medicine.getType() == "ANTIBIOTIC" && 
-				date >= $tc.last21Day()
-			) from $records,
-			init(int count = 0;),
-			action(count++;),
-			result(count)
-		))
+		)
 	then
 		modify($mr){setDisease($d);}
-		System.out.println("Detektovana bolest: Akutna bubrezna povreda");
+		System.out.println("Detektovana bolest: Akutna bubrezna povreda sa povisenom temperaturom");
+end
+
+rule "Akutna bubrezna povreda - prima antibiotike"
+	no-loop
+	salience 25
+	when
+		$d: Disease(name == "Akutna bubrezna povreda")
+		$mr: MedicalRecord($symptoms: symptoms)
+		$p: Patient($records: records)
+		$tc: TimeCheck()
+		
+		Number(intValue >= 2) from accumulate(
+			$s: Symptom (
+				name == "Zamor" ||
+				name == "Gusenje" ||
+				name == "Otoci nogu i zglobova" ||
+				name == "Dijareja"
+			) from $symptoms,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+		
+		$medicineList: List() from accumulate(
+			MedicalRecord(date >= $tc.last21Day(), disease != null,
+				$med: medicine
+				) from $records,
+				init(List l = new ArrayList<>();),
+				action(l.add($med);),
+				result(l)
+		)
+		
+		Number(intValue >= 1) from accumulate(
+			Medicine(
+				type == MedicineType.ANTIBIOTIC
+			) from $medicineList,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+	then
+		modify($mr){setDisease($d);}
+		System.out.println("Detektovana bolest: Akutna bubrezna povreda sa primanjem antibiotika");
+end
+
+rule "Akutna bubrezna povreda - oporavlja se od operacije"
+	no-loop
+	salience 25
+	when
+		$d: Disease(name == "Akutna bubrezna povreda")
+		$mr: MedicalRecord($symptoms: symptoms)
+		$p: Patient($records: records)
+		$tc: TimeCheck()
+		
+		Number(intValue >= 2) from accumulate(
+			$s: Symptom (
+				name == "Zamor" ||
+				name == "Gusenje" ||
+				name == "Otoci nogu i zglobova" ||
+				name == "Dijareja"
+			) from $symptoms,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+		
+		$symptomsList: List() from accumulate(
+			MedicalRecord(disease != null,
+				$ss: symptoms
+				) from $records,
+				init(List l = new ArrayList<>();),
+				action(l.addAll($ss);),
+				result(l)
+		)
+		
+		Number(intValue >= 1) from accumulate(
+			Symptom(
+				name == "Oporavlja se od operacije"
+			) from $symptomsList,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+	then
+		modify($mr){setDisease($d);}
+		System.out.println("Detektovana bolest: Akutna bubrezna povreda sa oporavljanjem od operacije");
 end
 
 

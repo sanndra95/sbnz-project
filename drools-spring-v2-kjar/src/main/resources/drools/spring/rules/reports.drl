@@ -21,26 +21,23 @@ end
 
 query "Spisak mogucih zavisnika"
 	$p: Patient($records: records)
-	$m: Medicine($doctor: doctor, type == "ANALGETIC")
+	$m: Medicine($name: name, type == MedicineType.ANALGETIC)
 	$tc: TimeCheck()
 	$l: List(size >= 6) from accumulate (
 		$mr: MedicalRecord(
-			medicine == $m,
+			medicine == new Medicine($name),
 			date >= $tc.last6Months()
 		) from $records,
 		collectList($mr)
 	)
-	$doctors: Set(size >=3) from accumulate(
-		MedicalRecord(
-			$doctor: doctor
-		) from $mr,
-		collectSet($doctor)
-	)
+	
+	
+	
 end
 
 query "Spisak pacijenata sa oslabljenim imunitetom"
 	$p: Patient($records: records)
-	$m: Medicine( type == "ANTIBIOTIC")
+	$m: Medicine( type == MedicineType.ANTIBIOTIC)
 	$tc: TimeCheck()
 	$l: List(size >= 10) from accumulate(
 		$mr: MedicalRecord(
@@ -56,7 +53,7 @@ query "Spisak pacijenata sa oslabljenim imunitetom"
 		collectSet($d)
 	)
 	
-	not MedicalRecord( medicine.type != "ANTIBIOTIC", 
+	not MedicalRecord( medicine.type != MedicineType.ANTIBIOTIC, 
 		date >= $tc.last12Months()
 		) from $records
 end
