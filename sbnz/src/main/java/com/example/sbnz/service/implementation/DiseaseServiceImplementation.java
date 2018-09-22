@@ -6,6 +6,10 @@ import com.example.sbnz.model.Symptom;
 import com.example.sbnz.repository.DiseaseRepository;
 import com.example.sbnz.service.DiseaseService;
 import com.example.sbnz.utils.DiseaseComparator;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -53,7 +57,11 @@ public class DiseaseServiceImplementation implements DiseaseService {
     @Override
     public Collection<DiseaseDTO> getDiseasesBySymptoms(Collection<Symptom> symptoms) {
 
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
         for(Symptom s : symptoms) {
             kieSession.insert(s);
         }

@@ -18,4 +18,6 @@ public interface PatientService {
     Collection<ReportDTO> getReport2();
 
     Collection<Patient> getReport3();
+
+    void monitoring() throws InterruptedException;
 }

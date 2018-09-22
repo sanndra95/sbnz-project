@@ -1,6 +1,8 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.configuration.WebSocketController;
 import com.example.sbnz.dto.ReportDTO;
+import com.example.sbnz.events.Simulation;
 import com.example.sbnz.model.Disease;
 import com.example.sbnz.model.Medicine;
 import com.example.sbnz.model.Patient;
@@ -9,6 +11,10 @@ import com.example.sbnz.repository.MedicineRepository;
 import com.example.sbnz.repository.PatientRepository;
 import com.example.sbnz.service.PatientService;
 import com.example.sbnz.utils.TimeCheck;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -33,6 +39,12 @@ public class PatientServiceImplementation implements PatientService {
     @Autowired
     KieContainer kieContainer;
 
+    @Autowired
+    WebSocketController webSocketController;
+
+    @Autowired
+    Simulation sim;
+
     @Override
     public Patient create(Patient patient) {
         return patientRepository.save(patient);
@@ -50,7 +62,11 @@ public class PatientServiceImplementation implements PatientService {
 
     @Override
     public Collection<ReportDTO> getReport1() {
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -95,7 +111,11 @@ public class PatientServiceImplementation implements PatientService {
 
     @Override
     public Collection<ReportDTO> getReport2() {
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -146,7 +166,11 @@ public class PatientServiceImplementation implements PatientService {
 
     @Override
     public Collection<Patient> getReport3() {
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -190,5 +214,25 @@ public class PatientServiceImplementation implements PatientService {
         }
 
         return found;
+    }
+
+    @Override
+    public void monitoring() throws InterruptedException {
+
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
+
+
+
+        Thread.sleep(1000);
+        while (true) {
+            sim.oxygenEvent(kieSession, webSocketController);
+            sim.heartRhythmEvent(kieSession, webSocketController);
+            sim.dialysisEvent(kieSession, webSocketController);
+        }
+
     }
 }

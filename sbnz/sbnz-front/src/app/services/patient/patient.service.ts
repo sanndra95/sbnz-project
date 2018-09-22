@@ -62,6 +62,10 @@ export class PatientService {
     return this.http.get<Patient[]>("http://localhost:8080/api/patient/getReport3");
   }
 
+  monitor() {
+    return this.http.get("http://localhost:8080/api/patient/monitor");
+  }
+
   
 
 }

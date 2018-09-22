@@ -85,4 +85,11 @@ public class PatientController {
         Collection<Patient> patients = patientService.getReport3();
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/monitor", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> simulate() throws InterruptedException {
+        patientService.monitoring();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

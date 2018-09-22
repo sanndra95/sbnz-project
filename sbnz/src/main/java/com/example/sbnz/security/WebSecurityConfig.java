@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js"
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/socket/**").permitAll()
                 .anyRequest().authenticated();
         httpSecurity.cors();
         httpSecurity

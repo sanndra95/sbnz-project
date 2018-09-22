@@ -1,11 +1,21 @@
 package com.example.sbnz;
 
+import com.example.sbnz.configuration.WebSocketController;
+import com.example.sbnz.events.Simulation;
+import org.drools.core.ClockType;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
@@ -14,6 +24,7 @@ import java.io.IOException;
 public class SbnzApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(SbnzApplication.class, args);
 	}
 

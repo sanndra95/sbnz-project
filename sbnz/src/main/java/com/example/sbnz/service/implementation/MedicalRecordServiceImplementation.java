@@ -8,6 +8,10 @@ import com.example.sbnz.repository.MedicalRecordRepository;
 import com.example.sbnz.service.MedicalRecordService;
 import com.example.sbnz.utils.DiseasePriority;
 import com.example.sbnz.utils.TimeCheck;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
@@ -48,7 +52,11 @@ public class MedicalRecordServiceImplementation implements MedicalRecordService 
 
     @Override
     public MedicalRecord search(Patient patient, MedicalRecord medicalRecord) {
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieServices ks = KieServices.Factory.get();
+        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        KieBase kbase = kieContainer.newKieBase(kbconf);
+        KieSession kieSession = kbase.newKieSession();
 
         Collection<Disease> diseases = diseaseRepository.findAll();
 

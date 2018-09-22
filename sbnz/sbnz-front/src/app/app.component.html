@@ -35,11 +35,24 @@
             <li class="nav-item" *ngIf="getRole() == 'ROLE_DOCTOR'">
                 <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "reports">Reports</a>
             </li>
+            <li class="nav-item" *ngIf="getRole() == 'ROLE_DOCTOR'">
+                <a class="nav-link" style="color: rgb(70, 45, 45)" routerLink = "monitor">Monitoring</a>
+            </li>
 
         </ul>
       
       </nav>
 
 </div>
+
+<div style="text-align:center">
+        <div class="notif-container">
+          <div class="notif">
+            <div class="message"></div>
+          </div>
+        </div>
+      </div>
   
 <router-outlet></router-outlet>
+
+

@@ -29,6 +29,7 @@ import { DiagnoseComponent } from './components/diagnose/diagnose.component';
 import { RecordsComponent } from './components/records/records.component';
 import { OrderModule } from 'ngx-order-pipe';
 import { ReportsComponent } from './components/reports/reports.component';
+import { MonitorComponent } from './components/monitor/monitor.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ReportsComponent } from './components/reports/reports.component';
     PatientsComponent,
     DiagnoseComponent,
     RecordsComponent,
-    ReportsComponent
+    ReportsComponent,
+    MonitorComponent
   ],
   imports: [
     BrowserModule,
@@ -68,6 +70,7 @@ import { ReportsComponent } from './components/reports/reports.component';
         { path: 'diagnose/:id', component: DiagnoseComponent },
         { path: 'records/:id', component: RecordsComponent },
         { path: 'reports', component: ReportsComponent },
+        { path: 'monitor', component: MonitorComponent },
         { path: 'not-found', component: PageNotFoundComponent},
         { path: '**', redirectTo:'not-found'}
       ]

@@ -42,6 +42,11 @@ public class Patient {
 		
 	}
 
+	public Patient(Long id, String firstName) {
+		this.id = id;
+		this.firstName = firstName;
+	}
+
 	public Patient(Long id, String firstName, String lastName, Set<MedicalRecord> records, Set<Medicine> medicineAllergies, Set<Component> componentAllergies) {
 		this.id = id;
 		this.firstName = firstName;

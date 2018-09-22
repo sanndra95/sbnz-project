@@ -1,0 +1,69 @@
+package drools.spring.rules
+
+import com.example.sbnz.model.*;
+import com.example.sbnz.events.*;
+import java.util.*;
+
+rule "Problem sa kiseonikom"
+	agenda-group "oxygen-agenda"
+	when
+		$event: OxygenLevelEvent($p: patient, $ol: oxygenLevel, $ol < 70)
+		not(OxygenLevelEvent(
+			this != $event,
+			patient == $p,
+			oxygenLevel > $ol)
+			over window:time(15m))
+	then
+		insert(new OxygenLevelMessageEvent($p, "Nivo kiseonika manji od 70mmHg i ne raste"));
+		System.err.println("Nivo kiseonika manji od 70mmHg i ne raste");
+		drools.halt();
+end
+
+rule "Ubrzani srcani ritam"
+	agenda-group "heart-rhythm-agenda"
+	when
+		$event: HeartbeatEvent($p: patient)
+
+		$l: List(size > 25) from accumulate(
+			$e: HeartbeatEvent(this != $event,
+				patient == $p)
+				over window:time(10s),
+				collectList($e)
+		)
+	then
+		insert(new HeartRhythmMessageEvent($p, "Vise od 25 otkucaja srca u poslednjih 10 sekundi"));
+		System.err.println("Vise od 25 otkucaja srca u poslednjih 10 sekundi");
+		drools.halt();
+end
+
+rule "Hitno potrebna dijaliza"
+	agenda-group "dialysis-agenda"
+	when
+		$event: HeartbeatEvent($p: patient)
+		
+		Number(intValue > 10) from accumulate (
+			$e: HeartbeatEvent(this != $event, patient == $p)
+			over window:time(10s),
+			count($e)
+		)
+	
+		$l: List(size >= 1) from accumulate(
+			$mr: MedicalRecord(disease.name == "Hronicna bubrezna bolest")
+			from $p.getRecords(),
+			collectList($mr)
+		)
+		
+		
+		Number(intValue < 100) from accumulate(
+			$ue: UrinEvent(
+				patient == $p,
+				$a: amount)
+				over window:time(12h),
+				sum($a)
+			)
+	then
+		insert(new EmergencyDialysisMessageEvent($p, "Potrebna dijaliza"));
+		System.err.println("Potrebna dijaliza");
+		drools.halt();
+	
+end
