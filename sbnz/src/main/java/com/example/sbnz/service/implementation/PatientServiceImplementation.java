@@ -158,7 +158,7 @@ public class PatientServiceImplementation implements PatientService {
             Patient p = (Patient) r.get("$p");
             Medicine m = (Medicine) r.get("$m");
             //System.err.println(m.getName());
-            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), "a");
+            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), m.getName());
             found.add(dto);
         }
 
