@@ -55,14 +55,18 @@ public class MedicalRecordController {
 
     @PostMapping(value = "/search/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> startResoner(@PathVariable Long id, @RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<?> startResoner(@PathVariable Long id, @RequestBody MedicalRecord medicalRecord, HttpServletRequest request) {
         //logger.info("> medical record: disease: {} medicine: {}  symptoms: {}", medicalRecord.getDisease().getName(), medicalRecord.getMedicine().getName(), medicalRecord.getSymptoms().size());
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User u = userService.findByUsername(username);
+
         medicalRecord.setDate(new Date());
         medicalRecord.setDeleted(false);
 
         Patient patient = patientService.findById(id);
 
-        MedicalRecord mr = medicalRecordService.search(patient, medicalRecord);
+        MedicalRecord mr = medicalRecordService.search(patient, medicalRecord, u.getEmail());
 
         return new ResponseEntity<>(mr, HttpStatus.OK);
     }

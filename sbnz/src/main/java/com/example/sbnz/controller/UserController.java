@@ -83,6 +83,15 @@ public class UserController {
 		User updated = userService.create(u);
 		return new ResponseEntity<>(updated, HttpStatus.OK);
 	}
+
+	@GetMapping(value = "/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request) {
+		String token = request.getHeader(tokenHeader);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		User u = userService.findByUsername(username);
+		userService.logout(u.getEmail());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
 
 }

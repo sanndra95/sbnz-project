@@ -1,10 +1,15 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.model.Component;
 import com.example.sbnz.model.Medicine;
 import com.example.sbnz.model.Patient;
 import com.example.sbnz.repository.MedicineRepository;
 import com.example.sbnz.repository.PatientRepository;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
@@ -53,7 +58,7 @@ public class MedicineServiceImplementation implements MedicineService {
     }
 
     @Override
-    public Boolean checkAllergies(Long id, Medicine medicine) {
+    public Boolean checkAllergies(Long id, Medicine medicine, String username) {
         Patient patient = patientRepository.findOne(id);
 
         logger.info("pacijent: {} {}", patient.getFirstName(), patient.getLastName());
@@ -61,7 +66,15 @@ public class MedicineServiceImplementation implements MedicineService {
         logger.info("alergican na komponente: {}", patient.getComponentAllergies().size());
         logger.info("lek: {}", medicine.getName());
 
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if(kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
 
         kieSession.insert(patient);
         kieSession.insert(medicine);

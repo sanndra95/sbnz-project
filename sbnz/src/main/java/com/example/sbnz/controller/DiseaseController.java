@@ -2,15 +2,20 @@ package com.example.sbnz.controller;
 
 import com.example.sbnz.dto.DiseaseDTO;
 import com.example.sbnz.model.*;
+import com.example.sbnz.security.JwtTokenUtil;
 import com.example.sbnz.service.DiseaseService;
+import com.example.sbnz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,6 +28,15 @@ public class DiseaseController {
 
     @Autowired
     DiseaseService diseaseService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Value("${jwt.header}")
+    private String tokenHeader;
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -78,10 +92,14 @@ public class DiseaseController {
 
     @PostMapping(value = "/getBySymptoms", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> getDiseasesBySymptoms(@RequestBody List<Symptom> symptoms) {
+    public ResponseEntity<?> getDiseasesBySymptoms(@RequestBody List<Symptom> symptoms, HttpServletRequest request) {
         logger.info("> symptoms size: {}", symptoms.size());
 
-        Collection<DiseaseDTO> dto = diseaseService.getDiseasesBySymptoms(symptoms);
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User u = userService.findByUsername(username);
+
+        Collection<DiseaseDTO> dto = diseaseService.getDiseasesBySymptoms(symptoms, u.getEmail());
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }

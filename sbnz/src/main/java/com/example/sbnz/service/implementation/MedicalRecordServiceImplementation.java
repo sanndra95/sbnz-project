@@ -1,5 +1,6 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.model.Disease;
 import com.example.sbnz.model.MedicalRecord;
 import com.example.sbnz.model.Patient;
@@ -51,12 +52,17 @@ public class MedicalRecordServiceImplementation implements MedicalRecordService 
     }
 
     @Override
-    public MedicalRecord search(Patient patient, MedicalRecord medicalRecord) {
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+    public MedicalRecord search(Patient patient, MedicalRecord medicalRecord, String username) {
+
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if(kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
+
 
         Collection<Disease> diseases = diseaseRepository.findAll();
 

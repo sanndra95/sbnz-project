@@ -13,5 +13,5 @@ public interface MedicalRecordService {
 
     MedicalRecord findById(Long id);
 
-    MedicalRecord search(Patient patient, MedicalRecord medicalRecord);
+    MedicalRecord search(Patient patient, MedicalRecord medicalRecord, String username);
 }

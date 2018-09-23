@@ -1,5 +1,6 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.model.User;
 import com.example.sbnz.repository.UserRepository;
 import org.kie.api.runtime.KieContainer;
@@ -35,5 +36,12 @@ public class UserServiceImplementation implements UserService {
     public User findById(Long id) {
         return userRepository.getOne(id);
     }
+
+    @Override
+    public void logout(String username) {
+        SbnzApplication.kieSessions.remove("kieSession-"+username);
+        SbnzApplication.allUsers.remove("currentUser-"+username);
+    }
+
 
 }

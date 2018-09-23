@@ -16,5 +16,5 @@ public interface DiseaseService {
 
     Disease findById(Long id);
 
-    Collection<DiseaseDTO> getDiseasesBySymptoms(Collection<Symptom> symptoms);
+    Collection<DiseaseDTO> getDiseasesBySymptoms(Collection<Symptom> symptoms, String username);
 }

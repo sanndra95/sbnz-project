@@ -1,10 +1,15 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.dto.DiseaseDTO;
 import com.example.sbnz.model.Disease;
 import com.example.sbnz.model.Symptom;
 import com.example.sbnz.repository.SymptomRepository;
 import com.example.sbnz.service.SymptomService;
+import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -46,9 +51,16 @@ public class SymptomServiceImplementation implements SymptomService {
     }
 
     @Override
-    public Collection<Symptom> getSymptomsByDisease(Disease disease) {
+    public Collection<Symptom> getSymptomsByDisease(Disease disease, String username) {
 
-        KieSession kieSession = kieContainer.newKieSession("ksession-rules");
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
         kieSession.insert(disease);
 
         kieSession.getAgenda().getAgendaGroup("queries-agenda").setFocus();

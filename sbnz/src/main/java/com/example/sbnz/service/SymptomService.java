@@ -15,5 +15,5 @@ public interface SymptomService {
 
     Symptom findById(Long id);
 
-    Collection<Symptom> getSymptomsByDisease(Disease disease);
+    Collection<Symptom> getSymptomsByDisease(Disease disease, String username);
 }

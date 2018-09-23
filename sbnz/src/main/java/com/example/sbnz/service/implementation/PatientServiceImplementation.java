@@ -1,5 +1,6 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.configuration.WebSocketController;
 import com.example.sbnz.dto.ReportDTO;
 import com.example.sbnz.events.Simulation;
@@ -61,12 +62,15 @@ public class PatientServiceImplementation implements PatientService {
     }
 
     @Override
-    public Collection<ReportDTO> getReport1() {
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+    public Collection<ReportDTO> getReport1(String username) {
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -110,12 +114,15 @@ public class PatientServiceImplementation implements PatientService {
     }
 
     @Override
-    public Collection<ReportDTO> getReport2() {
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+    public Collection<ReportDTO> getReport2(String username) {
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -150,8 +157,8 @@ public class PatientServiceImplementation implements PatientService {
         for(QueryResultsRow r: results) {
             Patient p = (Patient) r.get("$p");
             Medicine m = (Medicine) r.get("$m");
-            System.err.println(m.getName());
-            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), m.getName());
+            //System.err.println(m.getName());
+            ReportDTO dto = new ReportDTO(p.getFirstName(), p.getLastName(), "a");
             found.add(dto);
         }
 
@@ -165,12 +172,15 @@ public class PatientServiceImplementation implements PatientService {
     }
 
     @Override
-    public Collection<Patient> getReport3() {
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+    public Collection<Patient> getReport3(String username) {
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
 
         Collection<Patient> allPatients = patientRepository.findAll();
         Collection<Disease> allDiseases = diseaseRepository.findAll();
@@ -217,13 +227,16 @@ public class PatientServiceImplementation implements PatientService {
     }
 
     @Override
-    public void monitoring() throws InterruptedException {
+    public void monitoring(String username) throws InterruptedException {
 
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
 
 
 

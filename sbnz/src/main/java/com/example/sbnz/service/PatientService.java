@@ -13,11 +13,11 @@ public interface PatientService {
 
     Collection<Patient> getAll();
 
-    Collection<ReportDTO> getReport1();
+    Collection<ReportDTO> getReport1(String username);
 
-    Collection<ReportDTO> getReport2();
+    Collection<ReportDTO> getReport2(String username);
 
-    Collection<Patient> getReport3();
+    Collection<Patient> getReport3(String username);
 
-    void monitoring() throws InterruptedException;
+    void monitoring(String username) throws InterruptedException;
 }

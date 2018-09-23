@@ -1,5 +1,6 @@
 package com.example.sbnz.service.implementation;
 
+import com.example.sbnz.SbnzApplication;
 import com.example.sbnz.dto.DiseaseDTO;
 import com.example.sbnz.model.Disease;
 import com.example.sbnz.model.Symptom;
@@ -55,13 +56,17 @@ public class DiseaseServiceImplementation implements DiseaseService {
     }
 
     @Override
-    public Collection<DiseaseDTO> getDiseasesBySymptoms(Collection<Symptom> symptoms) {
+    public Collection<DiseaseDTO> getDiseasesBySymptoms(Collection<Symptom> symptoms, String username) {
 
-        KieServices ks = KieServices.Factory.get();
-        KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-        kbconf.setOption(EventProcessingOption.STREAM);
-        KieBase kbase = kieContainer.newKieBase(kbconf);
-        KieSession kieSession = kbase.newKieSession();
+        KieSession kieSession = SbnzApplication.kieSessions.get("kieSession-"+username);
+        if (kieSession == null) {
+            KieServices ks = KieServices.Factory.get();
+            KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+            kbconf.setOption(EventProcessingOption.STREAM);
+            KieBase kbase = kieContainer.newKieBase(kbconf);
+            kieSession = kbase.newKieSession();
+        }
+
         for(Symptom s : symptoms) {
             kieSession.insert(s);
         }

@@ -11,6 +11,7 @@ import { Medicine } from '../../model/medicine';
 import { MedicineService } from '../../services/medicine/medicine.service';
 import { DiseaseDTO } from '../../model/diseaseDTO';
 
+
 @Component({
   selector: 'app-diagnose',
   templateUrl: './diagnose.component.html',
@@ -62,6 +63,10 @@ export class DiagnoseComponent implements OnInit {
     type: ""
   }
 
+  chosenTemperature: number;
+  temp38: Symptom;
+  temp40to41: Symptom;
+
   constructor(private patientService: PatientService, 
     private symptomService: SymptomService,
     private diseaseService: DiseaseService,
@@ -110,8 +115,27 @@ export class DiagnoseComponent implements OnInit {
   getSymptoms() {
     this.symptomService.getAllSymptoms().subscribe(data => {
       this.allSymptoms = data;
+      for(var i = 0; i < this.allSymptoms.length; i++){
+        if(this.allSymptoms[i].name == "Temperatura veca od 38C"){
+          this.temp38 = this.allSymptoms[i];
+          this.allSymptoms.splice(i, 1);
+        }
+        if(this.allSymptoms[i].name == "Temperatura od 40C do 41C"){
+          this.temp40to41 = this.allSymptoms[i];
+          this.allSymptoms.splice(i, 1);
+        }
+      }
     })
   }
+
+  setTemperature() {
+    if(!this.record.symptoms.includes(this.temp38) && this.chosenTemperature >= 38){
+        this.record.symptoms.push(this.temp38);
+      } 
+    if(!this.record.symptoms.includes(this.temp40to41) && this.chosenTemperature >= 40 && this.chosenTemperature <= 41){
+        this.record.symptoms.push(this.temp40to41);  
+    }
+    }
 
   getDiseases() {
     this.diseaseService.getAllDiseases().subscribe(data => {
@@ -133,8 +157,12 @@ export class DiagnoseComponent implements OnInit {
 
   removeSymptom(s: Symptom) {
     var index = this.record.symptoms.indexOf(s, 0);
+    var temp = this.record.symptoms[index];
     this.record.symptoms.splice(index, 1);
-    this.allSymptoms.push(s);
+    if(temp != this.temp38 && temp != this.temp40to41) {
+      this.allSymptoms.push(s);
+    }
+    
   }
 
   getDiagnose() {
@@ -182,6 +210,12 @@ export class DiagnoseComponent implements OnInit {
       this.showSymptomsTable = false;
       this.selfDiagnose = false;
 
+      for(var i = 0; i < this.record.symptoms.length; i++) {
+        if(this.record.symptoms[i] != this.temp38 && this.record.symptoms[i] != this.temp40to41) {
+          this.allSymptoms.push(this.record.symptoms[i]);
+        }
+        
+      }
       this.record = {
         symptoms: []
       }

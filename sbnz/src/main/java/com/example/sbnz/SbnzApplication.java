@@ -2,6 +2,7 @@ package com.example.sbnz;
 
 import com.example.sbnz.configuration.WebSocketController;
 import com.example.sbnz.events.Simulation;
+import com.example.sbnz.model.User;
 import org.drools.core.ClockType;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -19,6 +20,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootApplication
 public class SbnzApplication {
@@ -27,6 +30,9 @@ public class SbnzApplication {
 
 		SpringApplication.run(SbnzApplication.class, args);
 	}
+
+	public static Map<String, KieSession> kieSessions = new HashMap<>();
+	public static Map<String, User> allUsers = new HashMap<>();
 
 	@Bean
 	public KieContainer kieContainer() {

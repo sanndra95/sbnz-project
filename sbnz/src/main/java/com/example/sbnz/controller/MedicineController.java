@@ -1,21 +1,22 @@
 package com.example.sbnz.controller;
 
-import com.example.sbnz.model.Component;
-import com.example.sbnz.model.Disease;
-import com.example.sbnz.model.Medicine;
-import com.example.sbnz.model.Patient;
+import com.example.sbnz.model.*;
+import com.example.sbnz.security.JwtTokenUtil;
 import com.example.sbnz.service.DiseaseService;
 import com.example.sbnz.service.MedicineService;
 import com.example.sbnz.service.PatientService;
+import com.example.sbnz.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 @RestController
@@ -30,6 +31,15 @@ public class MedicineController {
 
     @Autowired
     PatientService patientService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Value("${jwt.header}")
+    private String tokenHeader;
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -85,9 +95,12 @@ public class MedicineController {
 
     @PostMapping(value = "/checkAllergies/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> checkForAllergies(@PathVariable Long id, @RequestBody Medicine medicine) {
+    public ResponseEntity<?> checkForAllergies(@PathVariable Long id, @RequestBody Medicine medicine, HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader);
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        User u = userService.findByUsername(username);
 
-        Boolean allergic = medicineService.checkAllergies(id, medicine);
+        Boolean allergic = medicineService.checkAllergies(id, medicine, u.getEmail());
         return new ResponseEntity<>(allergic, HttpStatus.OK);
     }
 

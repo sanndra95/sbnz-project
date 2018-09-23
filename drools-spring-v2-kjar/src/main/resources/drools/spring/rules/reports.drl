@@ -25,14 +25,17 @@ query "Spisak mogucih zavisnika"
 	$tc: TimeCheck()
 	$l: List(size >= 6) from accumulate (
 		$mr: MedicalRecord(
-			medicine == new Medicine($name),
+			medicine.name == $name,
 			date >= $tc.last6Months()
 		) from $records,
 		collectList($mr)
 	)
 	
-	
-	
+	$dl: Set(size>=3) from accumulate(
+		$d: MedicalRecord($doc: doctor) from $l,
+		collectSet($doc)
+	)
+
 end
 
 query "Spisak pacijenata sa oslabljenim imunitetom"

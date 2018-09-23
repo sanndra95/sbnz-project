@@ -15,5 +15,5 @@ public interface MedicineService {
 
     Medicine findById(Long id);
 
-    Boolean checkAllergies(Long id, Medicine medicine);
+    Boolean checkAllergies(Long id, Medicine medicine, String username);
 }
